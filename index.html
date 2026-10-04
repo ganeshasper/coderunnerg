@@ -70,7 +70,7 @@ tbody tr:hover{background:#f59e0b22}
 </head>
 <body>
 <header>
-  <div><h1>⚡ Code Runner G</h1><div class="hl">HTML • CSS • JavaScript • Python</div></div>
+  <div style="display:flex;align-items:center;gap:10px"><svg id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="40" height="40"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset=".6" stop-color="#7c3aed"/><stop offset="1" stop-color="#ec4899"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg)"/><polyline points="21,20 9,32 21,44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="43,20 55,32 43,44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><text x="32" y="41" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="26" fill="#fde047">G</text></svg><div><h1>Code Runner G</h1><div class="hl">HTML • CSS • JavaScript • Python</div></div></div>
   <div>
     <button class="btn" id="tagBtn">Tags ▾</button>
     <div id="menu">
@@ -453,6 +453,7 @@ $("tagBtn").onclick=function(){$("menu").classList.toggle("open")};
 document.querySelectorAll("#menu button").forEach(function(b){b.onclick=function(){show(b.dataset.l)}});
 $("x").onclick=function(){$("ov").classList.remove("open")};
 
+var fl=document.createElement("link");fl.rel="icon";fl.href="data:image/svg+xml,"+encodeURIComponent($("logo").outerHTML);document.head.appendChild(fl);
 ta.value=src.html;tabs();nums();run();
 </script>
 </body>
