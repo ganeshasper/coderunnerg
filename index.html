@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Code Runner G</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef2ff;--card:#fff;--text:#0f172a;--accent:#1d4ed8;--line:#cbd5e1;--code:#b91c1c;--edbg:#bfdbfe}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--accent:#60a5fa;--line:#334155}}
+:root[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--accent:#60a5fa;--line:#334155}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px;background:var(--card);border-bottom:1px solid var(--line);position:relative}
+h1{font-size:18px;margin:0}
+.hl{font-size:11px;opacity:.7}
+.btn{border:0;border-radius:8px;padding:9px 14px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;font-size:14px}
+.btn.alt{background:#16a34a}
+#menu{position:absolute;right:12px;top:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;display:none;z-index:5;min-width:150px;overflow:hidden;box-shadow:0 8px 24px #0004}
+#menu.open{display:block}
+#menu button{display:block;width:100%;text-align:left;padding:11px 14px;border:0;background:none;color:var(--text);font-size:14px;cursor:pointer}
+#menu button:hover{background:var(--bg)}
+main{padding:10px;max-width:1000px;margin:auto}
+.tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center}
+.tab{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font-size:14px}
+.tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ed{display:flex;border:1px solid var(--line);border-radius:10px;background:var(--edbg);height:260px;overflow:hidden}
+#ln,#code{font:14px/21px ui-monospace,Menlo,Consolas,monospace;padding:10px 0;margin:0}
+#ln{width:40px;text-align:right;padding-right:8px;color:#1e3a8a;background:#93c5fd;overflow:hidden;white-space:pre;user-select:none}
+#code{flex:1;border:0;outline:0;resize:none;background:transparent;color:var(--code);padding-left:10px;white-space:pre;overflow:auto;font-weight:600}
+h2{font-size:14px;margin:12px 0 6px}
+#out{width:100%;height:220px;border:1px solid var(--line);border-radius:10px;background:#fff}
+#con:empty{display:none}
+#con{background:#0f172a;color:#86efac;font:13px ui-monospace,monospace;padding:10px;border-radius:10px;min-height:60px;white-space:pre-wrap;margin-top:6px}
+#ov{position:fixed;inset:0;background:#0009;display:none;z-index:9;padding:calc(10px + env(safe-area-inset-top,0px)) 10px 10px}
+#ov.open{display:block}
+.box{background:var(--card);border-radius:12px;height:100%;display:flex;flex-direction:column;max-width:1000px;margin:auto}
+.bh{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--line);font-weight:700}
+.bh button{border:0;background:none;color:var(--text);font-size:22px;cursor:pointer}
+.tw{overflow:auto;padding:10px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+th{background:var(--accent);color:#fff}
+td code{color:#1e3a8a;background:#e0e7ff;padding:2px 5px;border-radius:4px;font-weight:600;white-space:pre-wrap}
+td iframe{width:170px;height:80px;border:1px solid var(--line);background:#fff;border-radius:6px}
+
+body{background:radial-gradient(circle at 20% 0%,#c7d2fe 0,transparent 45%),radial-gradient(circle at 90% 10%,#fbcfe8 0,transparent 40%),var(--bg);min-height:100vh}
+header{background:linear-gradient(120deg,#1e3a8a,#7c3aed 60%,#ec4899);color:#fff;border:0;box-shadow:0 6px 20px #4c1d9540;padding:14px 16px}
+h1{font-size:22px;letter-spacing:.5px}
+.hl{opacity:.9;font-size:12px}
+.btn{background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 4px 12px #ef444455;transition:transform .15s;border-radius:999px;padding:10px 18px}
+.btn:active{transform:scale(.95)}
+.btn.alt{background:linear-gradient(135deg,#22c55e,#059669);box-shadow:0 4px 12px #05966955}
+#menu{border-radius:14px;overflow:hidden}
+#menu button{font-weight:600}
+main{padding:14px}
+.tab{border-radius:999px;font-weight:600;box-shadow:0 2px 6px #0001;transition:all .15s}
+.tab.on{background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 4px 12px #7c3aed55}
+.ed{border:2px solid #3b82f6;border-radius:16px;box-shadow:0 8px 24px #2563eb33}
+#out{border:2px solid #a78bfa;border-radius:16px;box-shadow:0 8px 24px #7c3aed22}
+#con{border-radius:16px;border-left:5px solid #22c55e}
+h2{font-size:15px;color:var(--accent)}
+.box{border-radius:18px;box-shadow:0 20px 50px #0006;overflow:hidden}
+.bh{background:linear-gradient(120deg,#1e3a8a,#7c3aed);color:#fff}
+.bh button{color:#fff}
+th{background:linear-gradient(120deg,#2563eb,#7c3aed)}
+tbody tr:nth-child(even){background:#6366f114}
+tbody tr:hover{background:#f59e0b22}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>⚡ Code Runner G</h1><div class="hl">HTML • CSS • JavaScript • Python</div></div>
+  <div>
+    <button class="btn" id="tagBtn">Tags ▾</button>
+    <div id="menu">
+      <button data-l="html">1. HTML</button>
+      <button data-l="css">2. CSS</button>
+      <button data-l="js">3. JavaScript</button>
+      <button data-l="py">4. Python</button>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="tabs" id="tabs"></div>
+  <div class="ed"><pre id="ln">1</pre><textarea id="code" spellcheck="false"></textarea></div>
+  <div class="tabs" style="margin-top:8px"><button class="btn alt" id="run">▶ Run</button></div>
+  <h2>Output</h2>
+  <iframe id="out" sandbox="allow-scripts"></iframe>
+  <div id="con"></div>
+</main>
+
+<div id="ov"><div class="box">
+  <div class="bh"><span id="ovt"></span><button id="x">✕</button></div>
+  <div class="tw"><table><thead><tr><th>Code</th><th>Kaise likhein</th><th>Code ka kaam</th><th>Visual result</th></tr></thead><tbody id="tb"></tbody></table></div>
+</div></div>
+
+<script>
+var names={html:"HTML",css:"CSS",js:"JavaScript",py:"Python"};
+var src={
+html:'<h1>Namaste Duniya</h1>\n<p>Ye mera pehla code hai.</p>',
+css:'body{font-family:sans-serif;text-align:center}\nh1{color:crimson}\nbutton{padding:8px 16px}',
+js:'',
+py:'naam = "Code Runner G"\nprint("Namaste", naam)\nfor i in range(3):\n    print("Number", i + 1)'};
+var cur="html";
+var $=function(i){return document.getElementById(i)};
+var ta=$("code"),ln=$("ln");
+
+function tabs(){
+  $("tabs").innerHTML="";
+  Object.keys(names).forEach(function(k){
+    var b=document.createElement("button");
+    b.className="tab"+(k==cur?" on":"");b.textContent=names[k];
+    b.onclick=function(){src[cur]=ta.value;cur=k;ta.value=src[k];tabs();nums()};
+    $("tabs").appendChild(b);
+  });
+}
+function nums(){
+  var n=ta.value.split("\n").length,s="";
+  for(var i=1;i<=n;i++)s+=i+"\n";
+  ln.textContent=s;ln.scrollTop=ta.scrollTop;
+}
+ta.addEventListener("input",nums);
+ta.addEventListener("scroll",function(){ln.scrollTop=ta.scrollTop});
+
+function pyRun(lines,vars,out){
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i];if(!l.trim()||l.trim()[0]=="#")continue;
+    var t=l.trim(),m;
+    if(m=t.match(/^for (\w+) in range\((.+)\):$/)){
+      var body=[];
+      while(i+1<lines.length&&(/^\s+/.test(lines[i+1])||!lines[i+1].trim())){body.push(lines[++i].replace(/^(\t|    )/,""))}
+      var n=pyEval(m[2],vars);
+      for(var k=0;k<n;k++){vars[m[1]]=k;pyRun(body,vars,out)}
+    }else if(m=t.match(/^print\((.*)\)$/)){
+      out.push(pyEval("["+m[1]+"]",vars).join(" "));
+    }else if(m=t.match(/^(\w+)\s*=\s*(.+)$/)){
+      vars[m[1]]=pyEval(m[2],vars);
+    }else throw new Error("Samajh nahi aaya: "+t);
+  }
+}
+function pyEval(e,vars){
+  var keys=Object.keys(vars);
+  return Function.apply(null,keys.concat("return ("+e.replace(/\bTrue\b/g,"true").replace(/\bFalse\b/g,"false")+")")).apply(null,keys.map(function(k){return vars[k]}));
+}
+function runPy(code){
+  var out=[];
+  try{pyRun(code.split("\n"),{},out)}catch(e){out.push("Error: "+e.message)}
+  return out.join("\n");
+}
+
+function run(){
+  src[cur]=ta.value;
+  var con=$("con");
+  con.textContent=cur=="py"?runPy(src.py):"";
+  $("out").srcdoc='<style>'+src.css+'</style>'+src.html+
+   '<script>console.log=function(){parent.postMessage({log:[].slice.call(arguments).join(" ")},"*")};window.onerror=function(m){parent.postMessage({log:"Error: "+m},"*")};<\/script><script>'+src.js.replace(/<\/script/gi,"<\\/script")+'<\/script>';
+}
+window.addEventListener("message",function(e){
+  if(e.data&&e.data.log!==undefined){var c=$("con");c.textContent+=(c.textContent?"\n":"")+e.data.log}
+});
+$("run").onclick=run;
+
+var D={
+html:String.raw`html|Poore page ka root|<html><body>Page</body></html>
+head|Page ki hidden info|
+title|Browser tab ka naam|
+meta|Page ka meta data|<meta charset="utf-8">
+link|CSS file jodta hai|<link rel="stylesheet" href="s.css">
+style|CSS likhne ki jagah|<style>p{color:red}</style><p>Laal</p>
+script|JavaScript likhta hai|<script>document.write("JS")<\/script>
+base|Sab links ka base URL|<base href="https://site.com/">
+body|Page ka dikhne wala hissa|
+h1|Sabse bada heading|
+h2|Heading 2|
+h3|Heading 3|
+h4|Heading 4|
+h5|Heading 5|
+h6|Sabse chhota heading|
+p|Paragraph|
+br|Nayi line|Line1<br>Line2
+hr|Aadi line (divider)|A<hr>B
+b|Bold text|
+strong|Zaroori (bold) text|
+i|Italic text|
+em|Zor dekar (italic) text|
+u|Underline text|
+s|Kata hua text|
+del|Delete kiya text|
+ins|Naya joda text|
+mark|Highlight text|
+small|Chhota text|
+sub|Neeche chhota text|H<sub>2</sub>O
+sup|Upar chhota text|X<sup>2</sup>
+code|Code jaisa text|
+pre|Jaisa likha waisa dikhata hai|<pre>a   b\nc</pre>
+kbd|Keyboard key|<kbd>Ctrl</kbd>
+samp|Sample output|
+var|Variable ka naam|
+q|Chhota quote|
+blockquote|Lamba quote|
+cite|Kitab/film ka naam|
+abbr|Short form|<abbr title="HyperText">HTML</abbr>
+address|Pata (address)|
+dfn|Definition term|
+time|Samay/tareekh|<time>10:30</time>
+bdo|Text ki disha badalta hai|<bdo dir="rtl">Hello</bdo>
+bdi|Alag disha ka text|
+wbr|Shabd todne ki jagah|Bahut<wbr>lamba
+a|Link banata hai|<a href="#">Link</a>
+img|Photo dikhata hai|<img alt="photo" src="x.jpg">
+picture|Alag-alag photo|<picture><img alt="p" src="x.jpg"></picture>
+source|Media ka source|<source src="a.mp4">
+video|Video chalata hai|<video controls width="120"></video>
+audio|Awaaz chalata hai|<audio controls></audio>
+track|Video ke subtitle|<track src="s.vtt">
+iframe|Page ke andar page|<iframe width="120" height="40"></iframe>
+embed|Bahari content|<embed src="a.pdf">
+object|Bahari object|<object data="a.pdf"></object>
+map|Image map|<map name="m"></map>
+area|Image map ka hissa|<area shape="rect">
+canvas|Drawing area|<canvas width="100" height="40"></canvas>
+svg|Vector graphic|<svg width="40" height="40"><circle cx="20" cy="20" r="15" fill="red"/></svg>
+ul|Bullet list|<ul><li>A</li><li>B</li></ul>
+ol|Number wali list|<ol><li>A</li><li>B</li></ol>
+li|List ka item|<ul><li>Item</li></ul>
+dl|Description list|<dl><dt>HTML</dt><dd>Web ki bhasha</dd></dl>
+dt|Term (naam)|
+dd|Term ka matlab|
+table|Table banata hai|<table border="1"><tr><td>A</td><td>B</td></tr></table>
+thead|Table ka upari hissa|
+tbody|Table ka beech ka hissa|
+tfoot|Table ka neeche ka hissa|
+tr|Table ki row|
+th|Table ka heading cell|<table border="1"><tr><th>Naam</th></tr></table>
+td|Table ka data cell|
+caption|Table ka title|
+colgroup|Columns ka group|
+col|Column ki setting|
+form|Form banata hai|<form><input placeholder="Naam"></form>
+input|Input box|<input placeholder="Likho">
+textarea|Bada text box|<textarea>Text</textarea>
+button|Button|<button>Click</button>
+select|Dropdown|<select><option>A</option><option>B</option></select>
+option|Dropdown ka option|
+optgroup|Options ka group|
+label|Input ka naam|<label>Naam <input></label>
+fieldset|Form ka group|<fieldset><legend>Info</legend>Text</fieldset>
+legend|Fieldset ka title|
+datalist|Suggestion list|<input list="d"><datalist id="d"><option value="A"></datalist>
+output|Calculation ka result|<output>10</output>
+progress|Progress bar|<progress value="40" max="100"></progress>
+meter|Meter (gauge)|<meter value="0.6"></meter>
+div|Dabba (block)|
+span|Inline dabba|
+header|Page/section ka header|
+nav|Navigation links|
+main|Mukhya content|
+section|Section|
+article|Alag article|
+aside|Side content|
+footer|Neeche ka hissa|
+details|Chhupa/dikhne wala content|<details><summary>Dabao</summary>Chhupa text</details>
+summary|Details ka title|
+dialog|Popup box|<dialog open>Popup</dialog>
+figure|Photo + caption|<figure>Photo<figcaption>Naam</figcaption></figure>
+figcaption|Figure ka caption|
+template|Chhupa template|
+noscript|JS band ho tab dikhe|
+slot|Web component slot|
+data|Machine value|<data value="5">Paanch</data>`,
+css:String.raw`color|Text ka rang|red
+background|Piche ka rang/photo|yellow
+background-color|Piche ka rang|lightgreen
+background-image|Piche ki photo/gradient|linear-gradient(red,blue)
+background-size|Photo ka size|cover
+font-size|Akshar ka size|24px
+font-family|Font ka naam|monospace
+font-weight|Mota/patla text|bold
+font-style|Italic|italic
+text-align|Text ki jagah|center
+text-decoration|Underline/line|underline
+text-transform|Capital/small|uppercase
+line-height|Line ki unchai|2
+letter-spacing|Akshar ke beech jagah|5px
+word-spacing|Shabdon ke beech jagah|10px
+text-shadow|Text ki parchhai|2px 2px 3px gray
+text-indent|Pehli line andar|20px
+white-space|Space/line handling|nowrap
+width|Chaudai|100px
+height|Unchai|60px
+max-width|Max chaudai|80px
+min-height|Min unchai|60px
+margin|Bahar ki jagah|10px
+margin-top|Upar ki bahari jagah|15px
+padding|Andar ki jagah|15px
+padding-left|Left andar ki jagah|30px
+border|Kinara|3px solid blue
+border-width|Kinare ki motai|4px
+border-style|Kinare ka type|dashed
+border-color|Kinare ka rang|red
+border-radius|Kone gol|15px
+border-bottom|Sirf neeche ka kinara|3px solid green
+box-shadow|Dabbe ki parchhai|4px 4px 8px gray
+outline|Bahari line|2px solid orange
+display|Dikhne ka tarika|flex
+position|Jagah tay karna|relative;top:8px
+z-index|Upar-neeche ki parat|5
+float|Cheez ko side me|right
+overflow|Zyada content ka kaam|hidden;height:20px
+opacity|Dhundhla pan|0.4
+visibility|Chhupa (jagah rehti hai)|hidden
+cursor|Mouse ka nishan|pointer
+flex-direction|Flex ki disha|column
+justify-content|Flex me beech me|space-between
+align-items|Flex me upar-neeche|center
+flex-wrap|Agli line me jana|wrap
+gap|Cheezon ke beech jagah|12px
+order|Flex ka kram|2
+grid-template-columns|Grid ke columns|1fr 1fr
+transform|Ghumana/bada karna|rotate(5deg)
+transition|Dheere badlav|all 1s
+filter|Photo effect|blur(2px)
+backdrop-filter|Piche ka effect|blur(3px)
+list-style|List ka nishan|square inside
+vertical-align|Upar-neeche jagah|middle
+resize|Resize karna|both;overflow:auto
+object-fit|Photo fit karna|cover
+box-sizing|Size ginne ka tarika|border-box
+aspect-ratio|Chaudai:unchai anupat|2/1
+columns|Text ko columns me|2
+clip-path|Shape kaat-na|circle(40%)
+mix-blend-mode|Rang milana|multiply
+user-select|Text select hona|none
+pointer-events|Click band|none
+scroll-behavior|Smooth scroll|smooth`,
+js:String.raw`var|Purana variable|var x = 5;|x = 5
+let|Naya variable|let n = "Ravi";|n = Ravi
+const|Na badalne wala variable|const pi = 3.14;|pi = 3.14
+if / else|Shart check|if(x>3){console.log("bada")}else{console.log("chhota")}|bada
+switch|Kai options me se chunna|switch(2){case 1:...; case 2:...}|case 2 chala
+for|Baar-baar chalana|for(let i=0;i<3;i++){console.log(i)}|0 1 2
+while|Shart tak chalana|while(i<3){i++}|i = 3
+do while|Ek baar zaroor chalana|do{i++}while(i<3)|i = 3
+function|Kaam ka group|function add(a,b){return a+b}|add(2,3) = 5
+arrow =>|Chhota function|const sq = x => x*x;|sq(4) = 16
+return|Function se value lautana|return a+b;|value milti hai
+break|Loop rokna|if(i==2) break;|loop ruk gaya
+continue|Agla round|if(i==1) continue;|1 skip hua
+try / catch|Error sambhalna|try{x()}catch(e){console.log("error")}|error
+class|Class banana|class A{constructor(){this.n=1}}|object ban sakta hai
+new|Object banana|let a = new A();|a.n = 1
+this|Abhi ka object|this.n|object ki value
+console.log()|Console me likhna|console.log("Hi");|Hi
+alert()|Popup dikhana|alert("Hello");|Popup: Hello
+prompt()|User se input lena|prompt("Naam?");|Input box khulta hai
+confirm()|Haan/Nahi puchna|confirm("Pakka?");|OK / Cancel
+getElementById()|Element pakadna|document.getElementById("a")|Element milta hai
+querySelector()|CSS selector se pakadna|document.querySelector(".box")|Pehla element
+createElement()|Naya element banana|document.createElement("p")|Naya p tag
+appendChild()|Element jodna|body.appendChild(p)|Page me juda
+textContent|Text badalna|el.textContent = "New";|Text: New
+innerHTML|HTML badalna|el.innerHTML = "<b>Hi</b>";|Hi (bold)
+style|CSS badalna|el.style.color = "red";|Text laal
+addEventListener()|Click sunna|btn.addEventListener("click", f);|Click par f chalta
+setTimeout()|Der se chalana|setTimeout(f, 1000);|1 sec baad f
+setInterval()|Baar-baar chalana|setInterval(f, 1000);|Har sec f
+Math.random()|Random number|Math.random()|0 se 1 ke beech
+Math.round()|Gol karna|Math.round(4.6)|5
+Math.max()|Sabse bada|Math.max(1,9,3)|9
+parseInt()|Text se number|parseInt("42")|42
+toString()|Number se text|(5).toString()|"5"
+.length|Lambai|"abc".length|3
+push()|Array me jodna|a.push(4)|[1,2,3,4]
+pop()|Aakhri nikalna|a.pop()|[1,2]
+map()|Sab par kaam|[1,2].map(x=>x*2)|[2,4]
+filter()|Chhaantna|[1,2,3].filter(x=>x>1)|[2,3]
+join()|Array se text|["a","b"].join("-")|a-b
+split()|Text se array|"a-b".split("-")|["a","b"]
+includes()|Hai ya nahi|"abc".includes("b")|true
+toUpperCase()|Bade akshar|"abc".toUpperCase()|ABC
+JSON.stringify()|Object se text|JSON.stringify({a:1})|{"a":1}
+new Date()|Aaj ki tareekh|new Date().getFullYear()|2026
+typeof|Type batata hai|typeof 5|number`,
+py:String.raw`print()|Output dikhana|print("Hello")|Hello
+input()|User se input|naam = input("Naam? ")|Naam? ____
+variable|Data ka dabba|x = 10|x = 10
+if / elif / else|Shart check|if x>5:\n    print("bada")|bada
+for|Baar-baar chalana|for i in range(3):\n    print(i)|0 1 2
+while|Shart tak chalana|while x<3:\n    x+=1|x = 3
+range()|Numbers ki series|range(1,4)|1 2 3
+def|Function banana|def hi():\n    print("Hi")|hi() → Hi
+return|Value lautana|return a+b|value milti hai
+lambda|Chhota function|sq = lambda x: x*x|sq(4) = 16
+class|Class banana|class A:\n    pass|A() object
+import|Module lana|import math|math use kar sakte
+len()|Lambai|len("abc")|3
+type()|Type batana|type(5)|int
+int()|Number banana|int("5")|5
+str()|Text banana|str(5)|"5"
+float()|Dashmlav number|float("2.5")|2.5
+list|List (badal sakte)|a = [1,2,3]|[1, 2, 3]
+tuple|Tuple (nahi badalta)|t = (1,2)|(1, 2)
+dict|Key-value jodi|d = {"a":1}|{'a': 1}
+set|Unique items|s = {1,1,2}|{1, 2}
+append()|List me jodna|a.append(4)|[1,2,3,4]
+pop()|Aakhri nikalna|a.pop()|[1,2]
+sort()|Kram me lagana|a.sort()|[1,2,3]
+upper()|Bade akshar|"abc".upper()|ABC
+lower()|Chhote akshar|"ABC".lower()|abc
+split()|Text todna|"a b".split()|['a','b']
+join()|List se text|"-".join(["a","b"])|a-b
+replace()|Badalna|"abc".replace("a","x")|xbc
+try / except|Error sambhalna|try:\n    1/0\nexcept:\n    print("error")|error
+with open()|File kholna|with open("a.txt") as f:|File khuli
+break|Loop rokna|break|loop ruk gaya
+continue|Agla round|continue|iteration skip
+pass|Kuch nahi karna|pass|khali block
+in|Hai ya nahi|"a" in "abc"|True
+and / or / not|Logic|x>1 and x<5|True/False
+round()|Gol karna|round(4.6)|5
+abs()|Bina minus ke|abs(-5)|5
+max() / min()|Bada / chhota|max(1,9,3)|9
+sum()|Jod|sum([1,2,3])|6
+sorted()|Naya sorted list|sorted([3,1,2])|[1, 2, 3]
+enumerate()|Index ke saath|enumerate(["a","b"])|(0,a) (1,b)
+zip()|Do list jodna|zip([1,2],["a","b"])|(1,a) (2,b)
+f-string|Text me value|f"Hi {naam}"|Hi Ravi
+# comment|Note (chalta nahi)|# yeh note hai|kuch nahi hota
+del|Hatana|del a[0]|pehla hata
+global|Bahar ka variable|global x|x sab jagah
+isinstance()|Type check|isinstance(5,int)|True`
+};
+function show(l){
+  $("ovt").textContent=names[l]+" ke Tags ("+D[l].split("\n").length+")";
+  var tb=$("tb");tb.innerHTML="";
+  D[l].split("\n").forEach(function(s){
+    var f=s.replace(/\\n/g,"\n").replace(/\\\//g,"/").split("|"),name=f[0],kaam=f[1],ex=f[2]||"",res=f[3]||"",code,how,vis;
+    if(l=="html"){code="<"+name+">";how=ex||"<"+name+">Text</"+name+">";vis=how}
+    else if(l=="css"){code=name+":"+ex+";";how="selector{"+name+":"+ex+";}";vis='<div style="border:1px dashed #999;padding:4px;'+name+':'+ex+'"><b>A</b> <b>B</b> <b>C</b> text</div>'}
+    else{code=name;how=ex;vis=res}
+    var tr=document.createElement("tr");
+    [code,how].forEach(function(t){var td=document.createElement("td"),c=document.createElement("code");c.textContent=t;td.appendChild(c);tr.appendChild(td)});
+    var td=document.createElement("td");td.textContent=kaam;tr.appendChild(td);
+    td=document.createElement("td");
+    if(l=="html"||l=="css"){var fr=document.createElement("iframe");fr.setAttribute("sandbox","");fr.srcdoc="<body style='font:13px sans-serif;margin:6px'>"+vis;td.appendChild(fr)}
+    else{var c=document.createElement("code");c.textContent=vis;td.appendChild(c)}
+    tr.appendChild(td);tb.appendChild(tr);
+  });
+  $("ov").classList.add("open");$("menu").classList.remove("open");
+}
+$("tagBtn").onclick=function(){$("menu").classList.toggle("open")};
+document.querySelectorAll("#menu button").forEach(function(b){b.onclick=function(){show(b.dataset.l)}});
+$("x").onclick=function(){$("ov").classList.remove("open")};
+
+ta.value=src.html;tabs();nums();run();
+</script>
+</body>
+</html>
